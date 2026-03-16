@@ -1,0 +1,14 @@
+{
+  "name": "web3-project",
+  "version": "1.0.0",
+  "description": "Web3 Project with Hardhat Smart Contract and React Client",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix ./client\" \"npm run node --prefix ./smart_contract\"",
+    "client": "npm run dev --prefix ./client",
+    "contract": "npm run node --prefix ./smart_contract",
+    "install-all": "npm install && npm install --prefix ./client && npm install --prefix ./smart_contract"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}
