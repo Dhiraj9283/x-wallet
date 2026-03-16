@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Wallet } from 'lucide-react';
 
-const ConnectWalletComponent = () => {
+const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
 
@@ -21,11 +20,19 @@ const ConnectWalletComponent = () => {
     setIsHovering(false);
   };
 
+  const WalletSvg = ({ className }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+      <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+    </svg>
+  );
+
   return (
-    <div className="h-screen w-[100%] bg-[var(--color-bg)] flex items-center justify-center p-4">
-      <div className='card w-[80%] lg:w-[70%] md:w-[55%] flex justify-between h-[600px] border border-[var(--color-border)] rounded-2xl overflow-hidden bg-[var(--color-surface)] shadow-2xl'>
+    <div className="min-h-screen w-[100%] bg-[var(--color-bg)] flex items-center justify-center p-4 m-0 font-sans">
+      <div className='card w-[80%] lg:w-[70%] md:w-[55%] flex justify-between h-[600px] border border-[var(--color-border)] rounded-2xl overflow-hidden bg-[var(--color-surface)] shadow-2xl relative z-10'>
         <div
-          className='w-full lg:w-1/2 px-4 lg:px-16 left h-full relative overflow-hidden bg-[var(--color-bg)]'
+          className='w-full lg:w-1/2 px-4 lg:px-16 left h-full relative overflow-hidden bg-[var(--color-bg)] flex flex-col justify-center'
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -41,12 +48,12 @@ const ConnectWalletComponent = () => {
             }}
           />
           
-          <div className="form-container sign-in-container h-full z-10 relative flex flex-col justify-center items-center">
-            <div className='text-center py-10 md:py-20 flex flex-col items-center justify-center gap-6 h-full w-full'>
+          <div className="form-container sign-in-container h-full z-10 relative flex flex-col justify-center items-center py-10 md:py-20">
+            <div className='text-center flex flex-col items-center justify-center gap-6 h-full w-full'>
               
               <div className="mb-4">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-12 mx-auto">
-                    <Wallet className="w-10 h-10 text-white -rotate-12" />
+                    <WalletSvg className="w-10 h-10 text-white -rotate-12" />
                 </div>
               </div>
 
@@ -60,14 +67,18 @@ const ConnectWalletComponent = () => {
                 
                 <div className='mt-8 flex gap-4 justify-center items-center'>
                   <button 
-                    className="group/button relative inline-flex w-full justify-center items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 p-[1px] font-medium text-white transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (onConnect) onConnect();
+                    }}
+                    className="group/button relative inline-flex w-full justify-center items-center overflow-hidden rounded-xl bg-[var(--color-border)] px-4 py-1.5 text-xs font-normal text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-[var(--color-text-primary)] cursor-pointer"
                   >
-                    <span className="flex items-center justify-center gap-2 w-full h-full bg-[var(--color-surface)] px-6 py-3 rounded-xl transition-colors duration-300 group-hover/button:bg-transparent">
-                      <Wallet className="w-5 h-5" />
-                      Connect Wallet
+                    <span className="flex items-center justify-center gap-2 text-sm px-6 py-3 w-full h-full text-[var(--color-heading)] relative z-10">
+                      <WalletSvg className="w-5 h-5" />
+                      {currentAccount ? 'Wallet Connected!' : 'Connect Wallet'}
                     </span>
                     <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
-                      <div className="relative h-full w-8 bg-white/20" />
+                      <div className="relative h-full w-8 bg-white/10" />
                     </div>
                   </button>
                 </div>
