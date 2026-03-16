@@ -30,15 +30,15 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
 
   return (
     <div className="min-h-screen w-[100%] bg-custom-bg flex items-center justify-center p-4 m-0 font-sans">
-      <div className='card w-[90%] lg:w-[75%] md:w-[80%] flex justify-between h-[650px] border border-custom-border rounded-3xl overflow-hidden bg-custom-surface shadow-2xl relative z-10'>
+      <div className='card w-[90%] lg:w-[80%] md:w-[85%] flex justify-between h-[650px] border border-custom-border rounded-3xl overflow-hidden bg-custom-surface shadow-2xl relative z-10'>
         <div
           className='w-full lg:w-1/2 px-4 lg:px-16 left h-full relative overflow-hidden bg-custom-bg flex flex-col justify-center'
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* Glowing Orb */}
-          <div
+           {/* Glowing Orb */}
+           <div
             className={`absolute pointer-events-none w-[500px] h-[500px] bg-gradient-to-r from-xwallet-purple/20 via-xwallet-cyan/20 to-xwallet-pink/20 rounded-full blur-[80px] transition-opacity duration-300 ${
               isHovering ? 'opacity-100' : 'opacity-0'
             }`}
@@ -49,6 +49,11 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
           />
           
           <div className="form-container sign-in-container h-full z-10 relative flex flex-col justify-center items-center py-10 md:py-20">
+             {/* Text Brand for Mobile */}
+             <div className="flex md:hidden items-center gap-2 mb-8 top-8 absolute left-8">
+               <span className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">X-WALLET</span>
+             </div>
+
             <div className='text-center flex flex-col items-center justify-center gap-6 h-full w-full'>
               
               <div className="mb-4">
@@ -59,7 +64,7 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
 
               <div className='grid gap-4 md:gap-6 w-full max-w-sm'>
                 <h1 className='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400'>
-                  Welcome Back
+                   Welcome Back
                 </h1>
                 <p className="text-custom-text-secondary text-base md:text-lg leading-relaxed font-medium">
                   Connect your Web3 wallet to access your dashboard, view your assets, and securely transact.
@@ -92,14 +97,55 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
           </div>
         </div>
         
-        {/* Right side image */}
-        <div className='hidden lg:flex w-1/2 right h-full overflow-hidden bg-black relative items-center justify-center'>
-            <div className="absolute inset-0 bg-gradient-to-br from-xwallet-dark/80 to-xwallet-purple/40 z-10 mix-blend-overlay"></div>
-            <img
-              src="https://images.unsplash.com/photo-1639762681485-074b7f4aec63?q=80&w=1260&h=750&auto=format&fit=crop"
-              alt="Crypto Abstract Display"
-              className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110 opacity-70"
-            />
+        {/* Right side X-WALLET Hero section */}
+        <div className='hidden lg:flex w-1/2 right h-full overflow-hidden bg-[#0A0B10] relative items-center justify-center'>
+            <div className="absolute inset-0 bg-gradient-to-tr from-xwallet-purple/10 via-transparent to-xwallet-cyan/10 z-10 pointer-events-none"></div>
+            
+            {/* Ambient Background Glows */}
+            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-xwallet-purple/20 rounded-full blur-[100px]"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-xwallet-cyan/20 rounded-full blur-[100px]"></div>
+
+            <div className="relative z-20 flex flex-col items-center justify-center transform hover:scale-105 transition-transform duration-700">
+               {/* Glowing X Logo */}
+               <div className="relative flex items-center justify-center w-64 h-64 mb-8">
+                  {/* Outer glow ring */}
+                  <div className="absolute inset-0 border border-white/5 rounded-full shadow-[0_0_80px_rgba(168,85,247,0.3)] animate-[spin_10s_linear_infinite]"></div>
+                  <div className="absolute inset-2 border border-xwallet-cyan/20 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                  
+                  {/* X Symbol */}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-32 h-32 ml-4">
+                    <defs>
+                      <linearGradient id="gradX" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#a855f7" />
+                        <stop offset="50%" stopColor="#06b6d4" />
+                        <stop offset="100%" stopColor="#ec4899" />
+                      </linearGradient>
+                      <filter id="glowX">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                          <feMergeNode in="coloredBlur"/>
+                          <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                      </filter>
+                    </defs>
+                    <path
+                      d="M20,20 L80,80 M80,20 L20,80"
+                      stroke="url(#gradX)"
+                      strokeWidth="8"
+                      strokeLinecap="round"
+                      filter="url(#glowX)"
+                    />
+                  </svg>
+               </div>
+
+               {/* Brand Text */}
+               <h2 className="text-5xl font-black tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 text-center">
+                 X-WALLET
+               </h2>
+               <p className="text-custom-text-secondary mt-4 text-lg font-light tracking-widest uppercase">
+                 The Future of Web3
+               </p>
+            </div>
        </div>
       </div>
     </div>
