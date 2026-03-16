@@ -29,17 +29,17 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
   );
 
   return (
-    <div className="min-h-screen w-[100%] bg-[var(--color-bg)] flex items-center justify-center p-4 m-0 font-sans">
-      <div className='card w-[80%] lg:w-[70%] md:w-[55%] flex justify-between h-[600px] border border-[var(--color-border)] rounded-2xl overflow-hidden bg-[var(--color-surface)] shadow-2xl relative z-10'>
+    <div className="min-h-screen w-[100%] bg-custom-bg flex items-center justify-center p-4 m-0 font-sans">
+      <div className='card w-[90%] lg:w-[75%] md:w-[80%] flex justify-between h-[650px] border border-custom-border rounded-3xl overflow-hidden bg-custom-surface shadow-2xl relative z-10'>
         <div
-          className='w-full lg:w-1/2 px-4 lg:px-16 left h-full relative overflow-hidden bg-[var(--color-bg)] flex flex-col justify-center'
+          className='w-full lg:w-1/2 px-4 lg:px-16 left h-full relative overflow-hidden bg-custom-bg flex flex-col justify-center'
           onMouseMove={handleMouseMove}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
           {/* Glowing Orb */}
           <div
-            className={`absolute pointer-events-none w-[500px] h-[500px] bg-gradient-to-r from-purple-500/30 via-blue-500/30 to-pink-500/30 rounded-full blur-3xl transition-opacity duration-200 ${
+            className={`absolute pointer-events-none w-[500px] h-[500px] bg-gradient-to-r from-xwallet-purple/20 via-xwallet-cyan/20 to-xwallet-pink/20 rounded-full blur-[80px] transition-opacity duration-300 ${
               isHovering ? 'opacity-100' : 'opacity-0'
             }`}
             style={{
@@ -52,39 +52,40 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
             <div className='text-center flex flex-col items-center justify-center gap-6 h-full w-full'>
               
               <div className="mb-4">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform rotate-12 mx-auto">
-                    <WalletSvg className="w-10 h-10 text-white -rotate-12" />
+                <div className="w-24 h-24 bg-gradient-to-br from-xwallet-purple to-xwallet-cyan rounded-[2rem] flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.4)] transform hover:rotate-12 transition-transform duration-500 mx-auto border border-white/20">
+                    <WalletSvg className="w-12 h-12 text-white" />
                 </div>
               </div>
 
               <div className='grid gap-4 md:gap-6 w-full max-w-sm'>
-                <h1 className='text-3xl md:text-4xl font-extrabold text-[var(--color-text-primary)]'>
+                <h1 className='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400'>
                   Welcome Back
                 </h1>
-                <p className="text-[var(--color-text-secondary)] text-sm md:text-base leading-relaxed">
+                <p className="text-custom-text-secondary text-base md:text-lg leading-relaxed font-medium">
                   Connect your Web3 wallet to access your dashboard, view your assets, and securely transact.
                 </p>
                 
-                <div className='mt-8 flex gap-4 justify-center items-center'>
+                <div className='mt-10 flex gap-4 justify-center items-center'>
                   <button 
                     onClick={(e) => {
                       e.preventDefault();
                       if (onConnect) onConnect();
                     }}
-                    className="group/button relative inline-flex w-full justify-center items-center overflow-hidden rounded-xl bg-[var(--color-border)] px-4 py-1.5 text-xs font-normal text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-[var(--color-text-primary)] cursor-pointer"
+                    className="group relative inline-flex w-full justify-center items-center overflow-hidden rounded-2xl p-[1px] font-bold text-white transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] cursor-pointer"
                   >
-                    <span className="flex items-center justify-center gap-2 text-sm px-6 py-3 w-full h-full text-[var(--color-heading)] relative z-10">
-                      <WalletSvg className="w-5 h-5" />
+                    {/* Animated gradient border */}
+                    <span className="absolute inset-0 bg-gradient-to-r from-xwallet-purple via-xwallet-cyan to-xwallet-pink rounded-2xl animate-gradient-x"></span>
+                    
+                    {/* Glassmorphism inner button */}
+                    <span className="flex items-center justify-center gap-3 text-lg px-8 py-4 w-full h-full relative z-10 bg-custom-bg/80 backdrop-blur-xl rounded-2xl transition-all duration-300 group-hover:bg-transparent">
+                      <WalletSvg className="w-6 h-6 transform group-hover:-rotate-12 transition-transform duration-300" />
                       {currentAccount ? 'Wallet Connected!' : 'Connect Wallet'}
                     </span>
-                    <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-13deg)_translateX(-100%)] group-hover/button:duration-1000 group-hover/button:[transform:skew(-13deg)_translateX(100%)]">
-                      <div className="relative h-full w-8 bg-white/10" />
-                    </div>
                   </button>
                 </div>
               </div>
               
-              <div className="mt-8 text-xs text-[var(--color-text-secondary)]">
+              <div className="mt-8 text-sm text-custom-text-secondary">
                 By connecting, you agree to our Terms of Service
               </div>
             </div>
@@ -93,11 +94,11 @@ const ConnectWalletComponent = ({ onConnect, currentAccount }) => {
         
         {/* Right side image */}
         <div className='hidden lg:flex w-1/2 right h-full overflow-hidden bg-black relative items-center justify-center'>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-purple-900/40 z-10 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-xwallet-dark/80 to-xwallet-purple/40 z-10 mix-blend-overlay"></div>
             <img
               src="https://images.unsplash.com/photo-1639762681485-074b7f4aec63?q=80&w=1260&h=750&auto=format&fit=crop"
               alt="Crypto Abstract Display"
-              className="w-full h-full object-cover transition-transform duration-700 hover:scale-105 opacity-60"
+              className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110 opacity-70"
             />
        </div>
       </div>

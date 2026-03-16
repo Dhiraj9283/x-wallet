@@ -13,6 +13,12 @@ module.exports = {
         "xwallet-cyan": "#06b6d4",
         "xwallet-pink": "#ec4899",
         "xwallet-dark": "#0B0A10", 
+        "custom-bg": "#101214",
+        "custom-surface": "#161A1D",
+        "custom-border": "#2C333A",
+        "custom-text-primary": "#C7D1DB",
+        "custom-text-secondary": "#596773",
+        "custom-heading": "#DEE4EA"
       },
       screens: {
         mf: "990px",
