@@ -1,120 +1,242 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
+import { FiArrowRight, FiShield, FiZap, FiBox } from 'react-icons/fi';
 
 import { TransactionContext } from "../context/TransactionContext";
 import { shortenAddress } from "../utils/shortenAddress";
-import { Loader } from ".";
+import { TransactionModal, InfoModal } from ".";
 
-const companyCommonStyles = "min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white";
-
-const Input = ({ placeholder, name, type, value, handleChange }) => (
-  <input
-    placeholder={placeholder}
-    type={type}
-    step="0.0001"
-    value={value}
-    onChange={(e) => handleChange(e, name)}
-    className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
-  />
-);
+const Input = ({ placeholder, name, type, value, handleChange }) => {
+  const isAmount = name === 'amount';
+  return (
+    <div className={`relative mb-6 w-full ${isAmount ? 'scale-[1.02] z-10' : ''} transition-transform`}>
+      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <FiBox className={`text-gray-400 ${isAmount ? 'text-xwallet-cyan' : ''}`} />
+      </div>
+      <input
+        placeholder={placeholder}
+        type={type}
+        step="0.0001"
+        value={value}
+        onChange={(e) => handleChange(e, name)}
+        className={`w-full bg-[#1e1e2d] border-[0.5px] border-gray-600 rounded-xl pl-10 pr-3 outline-none text-white focus:border-xwallet-purple transition-all bg-opacity-60 backdrop-blur-md shadow-inner ${isAmount ? 'py-4 text-lg font-bold shadow-[0_0_15px_rgba(6,182,212,0.1)] focus:shadow-[0_0_20px_rgba(168,85,247,0.3)]' : 'py-3 text-sm'}`}
+      />
+    </div>
+  );
+};
 
 const Welcome = () => {
-  const { currentAccount, connectWallet, handleChange, sendTransaction, formData, isLoading } = useContext(TransactionContext);
+  const { currentAccount, connectWallet, handleChange, sendTransaction, formData } = useContext(TransactionContext);
 
-  const handleSubmit = (e) => {
-    const { addressTo, amount, keyword, message } = formData;
+  const [txState, setTxState] = useState('idle'); // 'idle' | 'review' | 'waiting' | 'success' | 'error'
+  const [txHash, setTxHash] = useState('');
+  const [txError, setTxError] = useState('');
+  const [infoModal, setInfoModal] = useState(null); // { title, content, type }
 
+  const handleReview = (e) => {
     e.preventDefault();
-
-    if (!addressTo || !amount || !keyword || !message) return;
-
-    sendTransaction();
+    const { addressTo, amount, keyword, message } = formData;
+    if (!addressTo || !amount || !keyword || !message) {
+      alert("Please fill out all fields before proceeding.");
+      return;
+    }
+    setTxState('review');
   };
 
+  const handleConfirmTransfer = async () => {
+    setTxState('waiting');
+    try {
+      const hash = await sendTransaction();
+      setTxHash(hash);
+      setTxState('success');
+    } catch (error) {
+      if (error.code === 4001) {
+        setTxError('Transaction rejected by user.');
+      } else {
+        setTxError(error.message || 'An unknown error occurred.');
+      }
+      setTxState('error');
+    }
+  };
+
+  const closeTxModal = () => {
+    setTxState('idle');
+    setTxHash('');
+    setTxError('');
+  };
+
+  const openDeFiInfo = () => setInfoModal({
+    title: "What is DeFi?",
+    content: "Decentralized Finance (DeFi) allows users to send, receive, and manage assets without intermediaries like banks. Transactions are verified on the blockchain, ensuring transparency and full user control.",
+    type: "text"
+  });
+
+  const openSpeedInfo = () => setInfoModal({
+    title: "Speed",
+    content: "Transactions are processed directly on the blockchain, reducing delays compared to traditional systems. Speed may vary depending on network conditions.",
+    type: "text"
+  });
+
+  const openSecurityInfo = () => setInfoModal({
+    title: "Security",
+    content: "All transactions are cryptographically secured and require wallet approval. Only you control your assets through your private keys.",
+    type: "text"
+  });
+
+  const openEthereumInfo = () => setInfoModal({
+    title: "Ethereum Network",
+    content: {
+      address: currentAccount ? shortenAddress(currentAccount) : "Not Connected",
+      rawAddress: currentAccount || ""
+    },
+    type: "ethereum"
+  });
+
   return (
-    <div className="flex w-full justify-center items-center">
-      <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
-        <div className="flex flex-1 justify-start items-start flex-col mf:mr-10">
-          <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
-            Send Crypto <br /> across the world
+    <div className="flex w-full justify-center items-start min-h-screen bg-xwallet-dark text-white font-display overflow-hidden relative">
+      <div className="absolute top-[0%] left-[-10%] w-[50vw] h-[50vw] bg-xwallet-purple opacity-20 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-xwallet-cyan opacity-10 blur-[150px] rounded-full pointer-events-none z-0" />
+
+      <div className="flex mf:flex-row flex-col items-center justify-between md:p-20 py-12 px-4 z-10 w-full max-w-7xl mx-auto mf:mt-0 mt-8">
+        <div className="flex flex-1 justify-start items-start flex-col mf:mr-10 xl:mr-20">
+          <div 
+            onClick={openDeFiInfo}
+            className="inline-block mb-6 px-4 py-1.5 rounded-full border border-xwallet-cyan/30 bg-xwallet-cyan/10 backdrop-blur-md cursor-pointer hover:scale-105 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all duration-300 group"
+          >
+            <span className="text-xwallet-cyan text-sm font-semibold tracking-wide uppercase group-hover:text-white transition-colors">Decentralized Finance</span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-6xl font-extrabold leading-tight mb-8">
+            Welcome to <br /> 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-xwallet-cyan via-xwallet-purple to-xwallet-pink animate-gradient-x">
+              X-Wallet Experience
+            </span>
           </h1>
-          <p className="text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base">
-            Explore the crypto world. Buy and sell cryptocurrencies easily on Krypto.
+          
+          <p className="text-left mt-2 text-gray-400 font-medium md:w-10/12 w-11/12 text-lg leading-relaxed">
+            Your assets. Your control. Instantly
           </p>
+          
           {!currentAccount && (
             <button
               type="button"
               onClick={connectWallet}
-              className="flex flex-row justify-center items-center my-5 bg-[#2952e3] p-3 rounded-full cursor-pointer hover:bg-[#2546bd]"
+              className="flex flex-row justify-center items-center mt-10 mb-6 bg-gradient-to-r from-xwallet-purple to-xwallet-pink px-8 py-4 rounded-full font-semibold hover:opacity-90 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105 group"
             >
-              <AiFillPlayCircle className="text-white mr-2" />
-              <p className="text-white text-base font-semibold">
-                Connect Wallet
+              <AiFillPlayCircle className="text-white mr-3 text-2xl group-hover:scale-110 transition-transform" />
+              <p className="text-white text-lg font-bold">
+                 Connect Wallet
               </p>
             </button>
           )}
 
-          <div className="grid sm:grid-cols-3 grid-cols-2 w-full mt-10">
-            <div className={`rounded-tl-2xl ${companyCommonStyles}`}>
-              Reliability
+          <div className="grid sm:grid-cols-2 grid-cols-1 w-full mt-10 gap-5 max-w-lg">
+            <div 
+               onClick={openSpeedInfo}
+               className="flex items-center gap-4 p-5 rounded-2xl border border-gray-700 bg-gray-800/40 backdrop-blur-md hover:border-xwallet-cyan hover:bg-xwallet-cyan/5 cursor-pointer hover:scale-[1.03] hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all duration-300 group"
+            >
+               <div className="p-3 bg-xwallet-cyan/20 rounded-xl group-hover:scale-110 transition-transform"><FiZap className="text-xwallet-cyan text-2xl" /></div>
+               <div>
+                  <h4 className="font-semibold text-gray-200 group-hover:text-white transition-colors">Lightning Fast</h4>
+                  <p className="text-xs text-gray-500 mt-1">Instant processing</p>
+               </div>
             </div>
-            <div className={companyCommonStyles}>Security</div>
-            <div className={`sm:rounded-tr-2xl ${companyCommonStyles}`}>
-              Ethereum
-            </div>
-            <div className={`sm:rounded-bl-2xl ${companyCommonStyles}`}>
-              Web 3.0
-            </div>
-            <div className={companyCommonStyles}>Low Fees</div>
-            <div className={`rounded-br-2xl ${companyCommonStyles}`}>
-              Blockchain
+            
+            <div 
+               onClick={openSecurityInfo}
+               className="flex items-center gap-4 p-5 rounded-2xl border border-gray-700 bg-gray-800/40 backdrop-blur-md hover:border-xwallet-pink hover:bg-xwallet-pink/5 cursor-pointer hover:scale-[1.03] hover:shadow-[0_0_20px_rgba(236,72,153,0.2)] transition-all duration-300 group"
+            >
+               <div className="p-3 bg-xwallet-pink/20 rounded-xl group-hover:scale-110 transition-transform"><FiShield className="text-xwallet-pink text-2xl" /></div>
+               <div>
+                  <h4 className="font-semibold text-gray-200 group-hover:text-white transition-colors">End-to-End Security</h4>
+                  <p className="text-xs text-gray-500 mt-1">Military security</p>
+               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
-          <div className="p-3 flex justify-end items-start flex-col rounded-xl h-40 sm:w-72 w-full my-5 eth-card .white-glassmorphism ">
-            <div className="flex justify-between flex-col w-full h-full">
+        <div className="flex flex-col flex-1 items-center justify-center w-full mf:mt-0 mt-20 mf:ml-10">
+          <div className="relative w-full sm:w-[400px] flex flex-col justify-end items-start rounded-[2rem] h-56 my-5 bg-gradient-to-tr from-xwallet-purple via-[#6b21a8] to-xwallet-cyan shadow-[0_0_40px_rgba(168,85,247,0.5)] p-6 border border-white/20 hover:scale-[1.02] transition-transform duration-500 z-20 group">
+            <div className="absolute top-0 left-0 w-full h-full bg-white/5 rounded-[2rem] pointer-events-none" style={{ backdropFilter: 'blur(10px)' }}></div>
+            <div className="flex justify-between flex-col w-full h-full z-10">
               <div className="flex justify-between items-start">
-                <div className="w-10 h-10 rounded-full border-2 border-white flex justify-center items-center">
-                  <SiEthereum fontSize={21} color="#fff" />
+                <div className="w-14 h-14 rounded-full border-2 border-white/80 flex justify-center items-center bg-white/10 backdrop-blur-md group-hover:bg-white/20 transition-colors">
+                  <SiEthereum fontSize={28} color="#fff" />
                 </div>
-                <BsInfoCircle fontSize={17} color="#fff" />
+                <button 
+                  onClick={openEthereumInfo}
+                  className="p-1 rounded-full hover:bg-white/20 hover:scale-110 transition-all focus:outline-none"
+                  title="Network Details"
+                >
+                  <BsInfoCircle fontSize={24} color="#fff" className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                </button>
               </div>
-              <div>
-                <p className="text-white font-light text-sm">
+              <div className="mt-4">
+                <p className="text-white/80 font-medium text-xs tracking-widest uppercase mb-1">
+                  Wallet Address
+                </p>
+                <p className="text-white font-mono font-medium text-lg drop-shadow-md tracking-wider">
                   {shortenAddress(currentAccount)}
                 </p>
-                <p className="text-white font-semibold text-lg mt-1">
+                <p className="text-white font-extrabold text-2xl mt-2 tracking-widest drop-shadow-lg">
                   Ethereum
                 </p>
               </div>
             </div>
           </div>
-          <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
-            <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange} />
+
+          <div className="p-8 sm:w-[420px] w-full flex flex-col justify-start items-center bg-[#151522]/90 backdrop-blur-3xl rounded-[2.5rem] border border-gray-700/60 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative mt-[-2rem] pt-14 z-10">
+            <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-gray-700/50">
+               <h3 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Secure Transfer</h3>
+               <span className="text-xs font-bold px-3 py-1 bg-green-500/10 text-green-400 rounded-full border border-green-500/20">Network Status: OK</span>
+            </div>
+            
+            <Input placeholder="Recipient Address (0x...)" name="addressTo" type="text" handleChange={handleChange} />
             <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
-            <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
-            <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
+            <Input placeholder="GIF Keyword (e.g. success)" name="keyword" type="text" handleChange={handleChange} />
+            <Input placeholder="Transaction note" name="message" type="text" handleChange={handleChange} />
 
-            <div className="h-[1px] w-full bg-gray-400 my-2" />
-
-            {isLoading
-              ? <Loader />
-              : (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                >
-                  Send now
-                </button>
-              )}
+            <button
+               type="button"
+               onClick={handleReview}
+               disabled={txState !== 'idle'}
+               className={`text-white w-full mt-4 font-bold rounded-xl transition-all flex items-center justify-center gap-3 py-3.5 
+                  ${txState === 'idle' 
+                     ? 'bg-gradient-to-r from-xwallet-cyan to-blue-600 hover:from-xwallet-cyan/80 hover:to-blue-600/80 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transform hover:-translate-y-1' 
+                     : 'bg-gray-800 text-gray-400 opacity-60 cursor-not-allowed border border-gray-700'
+                  }`}
+            >
+               {txState === 'idle' ? (
+                 <>Confirm Transfer <FiArrowRight className="text-xl" /></>
+               ) : (
+                 <>Processing...</>
+               )}
+            </button>
           </div>
         </div>
       </div>
+      
+      <TransactionModal 
+        isOpen={txState !== 'idle'}
+        onClose={closeTxModal}
+        state={txState}
+        formData={formData}
+        onConfirm={handleConfirmTransfer}
+        txHash={txHash}
+        errorMessage={txError}
+      />
+
+      {infoModal && (
+        <InfoModal 
+          isOpen={!!infoModal}
+          onClose={() => setInfoModal(null)}
+          title={infoModal.title}
+          content={infoModal.content}
+          type={infoModal.type}
+        />
+      )}
     </div>
   );
 };

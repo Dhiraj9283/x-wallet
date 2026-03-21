@@ -127,16 +127,19 @@ export const TransactionsProvider = ({ children }) => {
         setIsLoading(false);
 
         const transactionsCount = await transactionsContract.getTransactionCount();
-
         setTransactionCount(transactionsCount.toNumber());
-        window.location.reload();
+        
+        await getAllTransactions();
+        setformData({ addressTo: "", amount: "", keyword: "", message: "" });
+        
+        return transactionHash.hash;
       } else {
-        console.log("No ethereum object");
+        throw new Error("No ethereum object found.");
       }
     } catch (error) {
-      console.log(error);
-
-      throw new Error("No ethereum object");
+      setIsLoading(false);
+      console.error("Transaction Error:", error);
+      throw error;
     }
   };
 
