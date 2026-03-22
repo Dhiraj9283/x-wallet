@@ -11,8 +11,3 @@ ReactDOM.render(
   </TransactionsProvider>,
   document.getElementById("root"),
 );
-import { BrowserRouter } from "react-router-dom";
-
-<BrowserRouter>
-  <App />
-</BrowserRouter>

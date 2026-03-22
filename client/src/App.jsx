@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar, Welcome, Footer, Services, Transactions, Login, Landing } from "./components";
 import { TransactionContext } from './context/TransactionContext';

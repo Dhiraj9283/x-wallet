@@ -6,7 +6,8 @@ import { FiArrowRight, FiShield, FiZap, FiBox } from 'react-icons/fi';
 
 import { TransactionContext } from "../context/TransactionContext";
 import { shortenAddress } from "../utils/shortenAddress";
-import { TransactionModal, InfoModal } from ".";
+import TransactionModal from "./TransactionModal";
+import InfoModal from "./InfoModal";
 
 const Input = ({ placeholder, name, type, value, handleChange }) => {
   const isAmount = name === 'amount';
