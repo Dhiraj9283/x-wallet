@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { SiEthereum } from 'react-icons/si';
 import { FiArrowRight, FiShield, FiZap, FiGlobe } from 'react-icons/fi';
@@ -11,12 +11,12 @@ const Landing = () => {
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-xwallet-purple opacity-30 blur-[150px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-xwallet-cyan opacity-20 blur-[150px] rounded-full pointer-events-none" />
-      
+
       {/* Navbar */}
       <nav className="w-full flex justify-between items-center py-6 px-8 md:px-16 z-10 relative">
         <div className="flex items-center gap-2 cursor-pointer">
           <div className="p-2 bg-gradient-to-tr from-xwallet-purple to-xwallet-cyan rounded-full">
-             <SiEthereum className="text-white text-2xl" />
+            <SiEthereum className="text-white text-2xl" />
           </div>
           <span className="text-2xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">X-WALLET</span>
         </div>
@@ -25,7 +25,7 @@ const Landing = () => {
           <a href="#security" className="hover:text-white transition-colors duration-300">Security</a>
           <a href="#community" className="hover:text-white transition-colors duration-300">Community</a>
         </div>
-        <button 
+        <button
           onClick={() => navigate('/login')}
           className="flex items-center gap-2 bg-gradient-to-r from-xwallet-purple to-xwallet-pink px-6 py-2.5 rounded-full font-semibold hover:opacity-90 transition-all duration-300 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)]"
         >
@@ -39,7 +39,7 @@ const Landing = () => {
           <span className="text-xwallet-cyan text-sm font-semibold tracking-wide uppercase">Introducing Web3 Mastery</span>
         </div>
         <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
-          The Next Generation <br /> 
+          The Next Generation <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-xwallet-cyan via-xwallet-purple to-xwallet-pink animate-gradient-x">
             Crypto Experience
           </span>
@@ -47,9 +47,9 @@ const Landing = () => {
         <p className="text-gray-400 text-lg md:text-xl max-w-2xl mb-12">
           Experience seamless, secure, and lightning-fast cryptocurrency transactions. X-Wallet gives you full control over your digital assets with an elegant, intuitive interface.
         </p>
-        
+
         <div className="flex flex-col sm:flex-row gap-6">
-          <button 
+          <button
             onClick={() => navigate('/login')}
             className="flex items-center justify-center gap-2 px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:scale-105 transition-transform duration-300"
           >
@@ -64,7 +64,7 @@ const Landing = () => {
       {/* Features Showcase */}
       <section id="features" className="relative z-10 px-8 md:px-16 py-32 mt-20 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
+
           <div className="xwallet-glass p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300 group">
             <div className="w-14 h-14 rounded-2xl bg-xwallet-purple/20 flex items-center justify-center mb-6 group-hover:bg-xwallet-purple/30 transition-colors">
               <FiZap className="text-3xl text-xwallet-cyan" />
@@ -88,7 +88,7 @@ const Landing = () => {
             <h3 className="text-2xl font-bold mb-4">Global Access</h3>
             <p className="text-gray-400">Connect to DApps globally. Send, receive, and swap Ethereum effortlessly on a decentralized network.</p>
           </div>
-          
+
         </div>
       </section>
 
